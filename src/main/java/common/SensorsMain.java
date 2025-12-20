@@ -1,10 +1,12 @@
-import entities.Device;
-import entities.Sensor;
-import entities.SensorReading;
-import entities.sensor.data.AccelerometerData;
-import entities.sensor.data.BarometerData;
-import entities.sensor.data.LightData;
-import entities.sensor.data.LocationData;
+package common;
+
+import common.entities.Device;
+import common.entities.Sensor;
+import common.entities.SensorReading;
+import common.entities.sensor.data.AccelerometerData;
+import common.entities.sensor.data.BarometerData;
+import common.entities.sensor.data.LightData;
+import common.entities.sensor.data.LocationData;
 import jakarta.persistence.EntityManagerFactory;
 import org.hibernate.cfg.Configuration;
 

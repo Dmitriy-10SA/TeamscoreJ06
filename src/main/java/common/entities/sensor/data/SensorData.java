@@ -1,6 +1,6 @@
-package entities.sensor.data;
+package common.entities.sensor.data;
 
-import entities.Sensor;
+import common.entities.Sensor;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -1,6 +1,6 @@
-package entities.sensor.data;
+package common.entities.sensor.data;
 
-import entities.Sensor;
+import common.entities.Sensor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
