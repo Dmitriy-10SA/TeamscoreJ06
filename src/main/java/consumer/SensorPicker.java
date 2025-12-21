@@ -34,7 +34,7 @@ public class SensorPicker {
     }
 
     /**
-     * Обрабатываем все ожидающие SensorReading и обновляем информацию в таблицах устройства и датчики
+     * Обрабатываем все ожидающие SensorReading и обновляем информацию в таблицах Device и Sensor
      */
     public void processPendingSensorReadings() {
         try (EntityManager entityManager = factory.createEntityManager()) {
