@@ -1,6 +1,6 @@
-package entities.sensor.data;
+package common.entities.sensor.data;
 
-import entities.Sensor;
+import common.entities.Sensor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BarometerData extends SensorData {
     @Column(name = "air_pressure", nullable = false)
-    private int airPressure;
+    private double airPressure;
 
-    public BarometerData(Sensor sensor, LocalDateTime measureAt, int airPressure) {
+    public BarometerData(Sensor sensor, LocalDateTime measureAt, double airPressure) {
         super(sensor, measureAt);
         this.airPressure = airPressure;
     }

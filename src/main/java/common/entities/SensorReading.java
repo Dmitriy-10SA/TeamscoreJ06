@@ -1,9 +1,11 @@
-package entities;
+package common.entities;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +30,8 @@ public class SensorReading {
     @Setter
     private LocalDateTime savedAt;
 
-    @Column(name = "value", nullable = false, columnDefinition = "JSONB")
+    @Column(name = "value", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
     private String valueJson;
 
     public SensorReading(Sensor sensor, LocalDateTime measuredAt, String valueJson) {
