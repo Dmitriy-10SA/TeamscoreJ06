@@ -15,9 +15,9 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class BarometerData extends SensorData {
     @Column(name = "air_pressure", nullable = false)
-    private int airPressure;
+    private double airPressure;
 
-    public BarometerData(Sensor sensor, LocalDateTime measureAt, int airPressure) {
+    public BarometerData(Sensor sensor, LocalDateTime measureAt, double airPressure) {
         super(sensor, measureAt);
         this.airPressure = airPressure;
     }
