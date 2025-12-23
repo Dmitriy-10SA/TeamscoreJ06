@@ -20,6 +20,9 @@ public class SensorReader {
         this.isRunning = true;
     }
 
+    /**
+     * Чтение (имитация, на самом деле генерируем данные сами) и запись данных в БД (в таблицу SensorReading)
+     */
     private void readAndSave() {
         try {
             SensorReading sensorReading = sensorReadingGenerator.generate();
@@ -32,12 +35,18 @@ public class SensorReader {
         }
     }
 
+    /**
+     * Запуск читателя датчиков
+     */
     public void start() {
         while (isRunning) {
             readAndSave();
         }
     }
 
+    /**
+     * Остановка читателя датчиков
+     */
     public void stop() {
         isRunning = false;
     }
