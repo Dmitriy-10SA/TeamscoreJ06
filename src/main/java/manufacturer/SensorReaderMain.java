@@ -1,5 +1,6 @@
 package manufacturer;
 
+import common.DevicesAndDeviceSensorsInitializer;
 import common.EntityManagerFactoryProvider;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -13,6 +14,7 @@ public class SensorReaderMain {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         EntityManagerFactory factory = EntityManagerFactoryProvider.getFactory();
         try (scanner; factory) {
+            DevicesAndDeviceSensorsInitializer.initialize(factory);
             SensorReader sensorReader = new SensorReader(factory);
             executorService.execute(sensorReader::start);
             //перед логами hibernate выводиться
