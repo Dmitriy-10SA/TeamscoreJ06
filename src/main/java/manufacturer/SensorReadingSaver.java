@@ -5,7 +5,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
 /**
- * Класс для сохранения показаний датчиков в БД
+ * Класс для сохранения показаний датчиков в БД (в таблицу SensorReading)
  */
 public class SensorReadingSaver {
     private final EntityManagerFactory entityManagerFactory;
@@ -15,7 +15,7 @@ public class SensorReadingSaver {
     }
 
     /**
-     * Сохраняет показание датчика в БД
+     * Сохраняет показание датчика в БД (в таблицу SensorReading)
      */
     public void save(SensorReading sensorReading) {
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {

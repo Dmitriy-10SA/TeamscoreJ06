@@ -6,7 +6,7 @@ import jakarta.persistence.EntityManagerFactory;
 import java.util.concurrent.ThreadLocalRandom;
 
 /**
- * Читатель датчиков и запись в БД в таблицу SensorReading (имитация)
+ * Читатель датчиков, который записывает в БД данные (в таблицу SensorReading)
  */
 public class SensorReader {
     private final SensorReadingGenerator sensorReadingGenerator;
@@ -24,7 +24,7 @@ public class SensorReader {
         try {
             SensorReading sensorReading = sensorReadingGenerator.generate();
             sensorReadingSaver.save(sensorReading);
-            Thread.sleep(ThreadLocalRandom.current().nextInt(500, 3000));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 2500));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
