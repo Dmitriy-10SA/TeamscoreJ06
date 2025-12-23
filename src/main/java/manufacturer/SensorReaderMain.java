@@ -1,29 +1,33 @@
 package manufacturer;
 
-import common.entities.Device;
-import common.entities.Sensor;
-import common.entities.SensorReading;
-import common.entities.sensor.data.AccelerometerData;
-import common.entities.sensor.data.BarometerData;
-import common.entities.sensor.data.LightData;
-import common.entities.sensor.data.LocationData;
+import common.DevicesAndDeviceSensorsInitializer;
+import common.EntityManagerFactoryProvider;
 import jakarta.persistence.EntityManagerFactory;
-import org.hibernate.cfg.Configuration;
+
+import java.util.Scanner;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class SensorReaderMain {
     public static void main(String[] args) {
-        EntityManagerFactory factory = new Configuration()
-                .addAnnotatedClass(AccelerometerData.class)
-                .addAnnotatedClass(BarometerData.class)
-                .addAnnotatedClass(LightData.class)
-                .addAnnotatedClass(LocationData.class)
-                .addAnnotatedClass(Device.class)
-                .addAnnotatedClass(Sensor.class)
-                .addAnnotatedClass(SensorReading.class)
-                .buildSessionFactory();
-        try (factory) {
+        Scanner scanner = new Scanner(System.in);
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        EntityManagerFactory factory = EntityManagerFactoryProvider.getFactory();
+        try (scanner; factory) {
+            DevicesAndDeviceSensorsInitializer.initialize(factory);
             SensorReader sensorReader = new SensorReader(factory);
-            sensorReader.start();
+            executorService.execute(sensorReader::start);
+            //перед логами hibernate выводиться
+            //можно было бы написать костыль типа: Thread.sleep(1500)
+            //но решил не делать так
+            System.out.println("Для завершения работы наберите в консоли STOP.");
+            while (true) {
+                if ("STOP".equals(scanner.nextLine())) {
+                    sensorReader.stop();
+                    executorService.shutdown();
+                    break;
+                }
+            }
         }
     }
 }

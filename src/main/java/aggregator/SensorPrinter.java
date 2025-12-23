@@ -43,15 +43,9 @@ public class SensorPrinter {
         this.isRunning = true;
     }
 
-    private void printData(
-            Sensor.SensorType sensorType,
-            LocalDateTime start,
-            LocalDateTime end,
-            SensorPrinterInterval interval
-    ) {
-        printData(sensorType, start, end, interval, null);
-    }
-
+    /**
+     * Печать данных в виде таблицы
+     */
     private void printData(
             Sensor.SensorType sensorType,
             LocalDateTime start,
@@ -79,15 +73,45 @@ public class SensorPrinter {
         }
     }
 
+    /**
+     * Получение интервала по коду (ввод пользователя см. функцию start)
+     */
+    private SensorPrinterInterval getSensorPrinterIntervalByCode(int code) {
+        return switch (code) {
+            case 0 -> SensorPrinterInterval.MINUTE;
+            case 1 -> SensorPrinterInterval.HOUR;
+            case 2 -> SensorPrinterInterval.DAY;
+            case 3 -> SensorPrinterInterval.WEEK;
+            default -> throw new IllegalArgumentException("Неизвестный интервал");
+        };
+    }
+
+    /**
+     * Получение типа датчика по коду (ввод пользователя см. функцию start)
+     */
+    private Sensor.SensorType getSensorTypeByCode(int code) {
+        return switch (code) {
+            case 1 -> Sensor.SensorType.ACCELEROMETER;
+            case 2 -> Sensor.SensorType.BAROMETER;
+            case 3 -> Sensor.SensorType.LIGHT;
+            case 4 -> Sensor.SensorType.LOCATION;
+            default -> throw new IllegalArgumentException("Неизвестный тип датчика");
+        };
+    }
+
+    /**
+     * Запуск класса для вывода данных
+     */
     public void start() {
+        isRunning = true;
         while (isRunning) {
             System.out.print("Выберите действие (0 - выход, 1 - печать ACCELEROMETER," +
                     " 2 - печать BAROMETER, 3 - печать LIGHT, 4 - печать LOCATION): ");
-            int action = scanner.nextInt();
-            if (action == 0) {
+            int sensorTypeCode = scanner.nextInt();
+            if (sensorTypeCode == 0) {
                 stop();
-            }
-            if (action < 0 || action > 4) {
+                break;
+            } else if (sensorTypeCode < 0 || sensorTypeCode > 4) {
                 System.out.println("Неизвестное действие. Попробуйте снова.");
                 continue;
             }
@@ -97,37 +121,27 @@ public class SensorPrinter {
             System.out.print("Введите конечную дату и время (в формате yyyy-MM-dd HH:mm:ss): ");
             LocalDateTime end = LocalDateTime.parse(scanner.nextLine(), DATE_TIME_FORMATTER);
             System.out.print("Введите интервал (0 - минута, 1 - час, 2 - день, 3 - неделя): ");
-            int intervalInt = scanner.nextInt();
-            if (intervalInt < 0 || intervalInt > 3) {
+            int intervalCode = scanner.nextInt();
+            if (intervalCode < 0 || intervalCode > 3) {
                 System.out.println("Неизвестное действие. Попробуйте снова.");
                 continue;
             }
             scanner.nextLine();
-            SensorPrinterInterval interval = switch (intervalInt) {
-                case 0 -> SensorPrinterInterval.MINUTE;
-                case 1 -> SensorPrinterInterval.HOUR;
-                case 2 -> SensorPrinterInterval.DAY;
-                case 3 -> SensorPrinterInterval.WEEK;
-                default -> throw new IllegalArgumentException("Неизвестный интервал");
-            };
-            System.out.print("Введите имя устройства (нажмите enter, чтобы не указывать): ");
+            SensorPrinterInterval interval = getSensorPrinterIntervalByCode(intervalCode);
+            System.out.print("Введите имя устройства (нажмите Enter, чтобы не указывать): ");
             String deviceName = scanner.nextLine();
-            System.out.println();
+            System.out.println("\n------------------------------------------------------------------------------");
+            System.out.println("Идет загрузка данных, пожалуйста, подождите...");
             System.out.println("------------------------------------------------------------------------------");
-            if (action == 1) {
-                printData(Sensor.SensorType.ACCELEROMETER, start, end, interval, deviceName);
-            } else if (action == 2) {
-                printData(Sensor.SensorType.BAROMETER, start, end, interval, deviceName);
-            } else if (action == 3) {
-                printData(Sensor.SensorType.LIGHT, start, end, interval, deviceName);
-            } else if (action == 4) {
-                printData(Sensor.SensorType.LOCATION, start, end, interval, deviceName);
-            }
-            System.out.println("------------------------------------------------------------------------------");
-            System.out.println();
+            Sensor.SensorType type = getSensorTypeByCode(sensorTypeCode);
+            printData(type, start, end, interval, deviceName);
+            System.out.println("------------------------------------------------------------------------------\n");
         }
     }
 
+    /**
+     * Остановка класса для вывода данных
+     */
     public void stop() {
         isRunning = false;
     }

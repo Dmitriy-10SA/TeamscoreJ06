@@ -2,6 +2,7 @@ package manufacturer;
 
 import common.entities.SensorReading;
 import jakarta.persistence.EntityManagerFactory;
+import manufacturer.generator.SensorReadingGenerator;
 
 import java.util.concurrent.ThreadLocalRandom;
 
@@ -20,24 +21,34 @@ public class SensorReader {
         this.isRunning = true;
     }
 
+    /**
+     * Чтение (имитация, на самом деле генерируем данные сами) и запись данных в БД (в таблицу SensorReading)
+     */
     private void readAndSave() {
         try {
             SensorReading sensorReading = sensorReadingGenerator.generate();
             sensorReadingSaver.save(sensorReading);
-            Thread.sleep(ThreadLocalRandom.current().nextInt(100, 2500));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(50, 800));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
-            System.out.println("Ошибка в SensorReader: " + e.getMessage());
+            throw new RuntimeException("Ошибка в SensorReader: " + e.getMessage());
         }
     }
 
+    /**
+     * Запуск читателя датчиков
+     */
     public void start() {
+        isRunning = true;
         while (isRunning) {
             readAndSave();
         }
     }
 
+    /**
+     * Остановка читателя датчиков
+     */
     public void stop() {
         isRunning = false;
     }

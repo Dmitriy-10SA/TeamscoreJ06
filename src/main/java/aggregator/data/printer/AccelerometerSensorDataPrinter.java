@@ -10,6 +10,9 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+/**
+ * Класс для печати данных AccelerometerData в виде таблицы
+ */
 public class AccelerometerSensorDataPrinter extends SensorDataPrinter<AccelerometerData> {
     private final Scanner scanner;
 
