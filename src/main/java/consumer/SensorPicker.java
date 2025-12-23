@@ -36,7 +36,7 @@ public class SensorPicker {
     /**
      * Обрабатываем все ожидающие SensorReading и обновляем информацию в таблицах Device и Sensor
      */
-    public void processPendingSensorReadings() {
+    private void processPendingSensorReadings() {
         try (EntityManager entityManager = factory.createEntityManager()) {
             try {
                 entityManager.getTransaction().begin();
@@ -55,17 +55,23 @@ public class SensorPicker {
                 if (entityManager.getTransaction().isActive()) {
                     entityManager.getTransaction().rollback();
                 }
-                System.out.println("Ошибка в SensorPicker: " + e.getMessage());
+                throw new RuntimeException("Ошибка в SensorPicker: " + e.getMessage());
             }
         }
     }
 
+    /**
+     * Запуск разборщика
+     */
     public void start() {
         while (isRunning) {
             processPendingSensorReadings();
         }
     }
 
+    /**
+     * Остановка разборщика
+     */
     public void stop() {
         isRunning = false;
     }
@@ -84,11 +90,14 @@ public class SensorPicker {
 
         private final ObjectMapper objectMapper = new ObjectMapper();
 
+        /**
+         * Сохранение данных датчика в нужную таблицу БД из таблицы SensorReading
+         */
         private void saveSensorData(SensorReading sensorReading, EntityManager entityManager) throws Exception {
             Map<String, Object> data = objectMapper.readValue(sensorReading.getValueJson(), Map.class);
             Sensor sensor = sensorReading.getSensor();
             LocalDateTime measuredAt = sensorReading.getMeasuredAt();
-            switch (sensorReading.getSensor().getType()) {
+            switch (sensor.getType()) {
                 case LIGHT -> {
                     int light = ((Number) data.get(LIGHT)).intValue();
                     LightData lightData = new LightData(sensor, measuredAt, light);
