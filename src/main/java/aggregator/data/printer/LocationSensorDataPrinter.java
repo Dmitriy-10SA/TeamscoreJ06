@@ -10,6 +10,9 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+/**
+ * Класс для печати данных LocationData в виде таблицы
+ */
 public class LocationSensorDataPrinter extends SensorDataPrinter<LocationData> {
     private final Scanner scanner;
 

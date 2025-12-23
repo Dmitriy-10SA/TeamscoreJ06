@@ -10,6 +10,9 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+/**
+ * Класс для печати данных LightData в виде таблицы
+ */
 public class LightSensorDataPrinter extends SensorDataPrinter<LightData> {
     private final Scanner scanner;
 

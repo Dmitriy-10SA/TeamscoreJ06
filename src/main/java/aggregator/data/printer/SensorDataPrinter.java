@@ -8,10 +8,17 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+
+/**
+ * Абстрактный класс для печати данных датчиков
+ */
 public abstract class SensorDataPrinter<T> {
     public final int PAGE_SIZE = 16;
     public final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
+    /**
+     * Возвращает начало интервала для усреднения данных по заданному типу интервала
+     */
     public LocalDateTime getStartInterval(
             LocalDateTime start,
             SensorPrinter.SensorPrinterInterval interval
@@ -22,6 +29,9 @@ public abstract class SensorDataPrinter<T> {
         };
     }
 
+    /**
+     * Абстрактный метод для печати данных сенсора
+     */
     public abstract void printData(
             List<T> data,
             SensorPrinter.SensorPrinterInterval interval,

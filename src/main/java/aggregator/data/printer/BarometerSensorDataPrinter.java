@@ -10,6 +10,9 @@ import java.util.Scanner;
 import java.util.TreeMap;
 import java.util.stream.Collectors;
 
+/**
+ * Класс для печати данных BarometerData в виде таблицы
+ */
 public class BarometerSensorDataPrinter extends SensorDataPrinter<BarometerData> {
     private final Scanner scanner;
 
