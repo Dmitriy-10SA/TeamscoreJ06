@@ -57,6 +57,7 @@ public class SensorPicker {
      * Запуск разборщика
      */
     public void start() {
+        isRunning = true;
         while (isRunning) {
             processPendingSensorReadings();
         }

@@ -40,6 +40,7 @@ public class SensorReader {
      * Запуск читателя датчиков
      */
     public void start() {
+        isRunning = true;
         while (isRunning) {
             readAndSave();
         }
