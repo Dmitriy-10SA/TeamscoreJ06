@@ -1,4 +1,4 @@
-package manufacturer.generator.light;
+package manufacturer.generator.json;
 
 import common.entity.sensor.data.LightData;
 

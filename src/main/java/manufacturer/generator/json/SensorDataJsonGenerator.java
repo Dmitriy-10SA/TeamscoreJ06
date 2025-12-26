@@ -1,4 +1,4 @@
-package manufacturer.generator.light;
+package manufacturer.generator.json;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import common.entity.sensor.data.SensorData;

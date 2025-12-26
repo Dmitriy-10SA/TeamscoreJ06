@@ -4,10 +4,10 @@ import common.entity.Sensor;
 import common.entity.SensorReading;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
-import manufacturer.generator.light.AccelerometerSensorDataJsonGenerator;
-import manufacturer.generator.light.BarometerSensorDataJsonGenerator;
-import manufacturer.generator.light.LightSensorDataJsonGenerator;
-import manufacturer.generator.light.LocationSensorDataJsonGenerator;
+import manufacturer.generator.json.AccelerometerSensorDataJsonGenerator;
+import manufacturer.generator.json.BarometerSensorDataJsonGenerator;
+import manufacturer.generator.json.LightSensorDataJsonGenerator;
+import manufacturer.generator.json.LocationSensorDataJsonGenerator;
 
 import java.time.LocalDateTime;
 import java.util.List;
