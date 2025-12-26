@@ -1,9 +1,13 @@
 package aggregator;
 
-import aggregator.data.printer.AccelerometerSensorDataPrinter;
-import aggregator.data.printer.BarometerSensorDataPrinter;
-import aggregator.data.printer.LightSensorDataPrinter;
-import aggregator.data.printer.LocationSensorDataPrinter;
+import aggregator.printer.AccelerometerSensorDataPrinter;
+import aggregator.printer.BarometerSensorDataPrinter;
+import aggregator.printer.LightSensorDataPrinter;
+import aggregator.printer.LocationSensorDataPrinter;
+import aggregator.provider.AccelerometerSensorDataProvider;
+import aggregator.provider.BarometerSensorDataProvider;
+import aggregator.provider.LightSensorDataProvider;
+import aggregator.provider.LocationSensorDataProvider;
 import common.entities.Sensor;
 import common.entities.sensor.data.AccelerometerData;
 import common.entities.sensor.data.BarometerData;
@@ -25,21 +29,27 @@ public class SensorPrinter {
     private static final DateTimeFormatter DATE_TIME_FORMATTER = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     private final Scanner scanner;
-    private final SensorDataProvider sensorDataProvider;
-    private final AccelerometerSensorDataPrinter accelerometerDataPrinter;
-    private final BarometerSensorDataPrinter barometerDataPrinter;
-    private final LightSensorDataPrinter lightDataPrinter;
-    private final LocationSensorDataPrinter locationDataPrinter;
+    private final AccelerometerSensorDataPrinter accelerometerSensorDataPrinter;
+    private final AccelerometerSensorDataProvider accelerometerSensorDataProvider;
+    private final BarometerSensorDataPrinter barometerSensorDataPrinter;
+    private final BarometerSensorDataProvider barometerSensorDataProvider;
+    private final LightSensorDataPrinter lightSensorDataPrinter;
+    private final LightSensorDataProvider lightSensorDataProvider;
+    private final LocationSensorDataPrinter locationSensorDataPrinter;
+    private final LocationSensorDataProvider locationSensorDataProvider;
 
     private boolean isRunning;
 
     public SensorPrinter(Scanner scanner, EntityManagerFactory factory) {
         this.scanner = scanner;
-        this.sensorDataProvider = new SensorDataProvider(factory);
-        this.accelerometerDataPrinter = new AccelerometerSensorDataPrinter(scanner);
-        this.barometerDataPrinter = new BarometerSensorDataPrinter(scanner);
-        this.lightDataPrinter = new LightSensorDataPrinter(scanner);
-        this.locationDataPrinter = new LocationSensorDataPrinter(scanner);
+        this.accelerometerSensorDataPrinter = new AccelerometerSensorDataPrinter(scanner);
+        this.accelerometerSensorDataProvider = new AccelerometerSensorDataProvider(factory);
+        this.barometerSensorDataPrinter = new BarometerSensorDataPrinter(scanner);
+        this.barometerSensorDataProvider = new BarometerSensorDataProvider(factory);
+        this.lightSensorDataPrinter = new LightSensorDataPrinter(scanner);
+        this.lightSensorDataProvider = new LightSensorDataProvider(factory);
+        this.locationSensorDataPrinter = new LocationSensorDataPrinter(scanner);
+        this.locationSensorDataProvider = new LocationSensorDataProvider(factory);
         this.isRunning = true;
     }
 
@@ -55,20 +65,20 @@ public class SensorPrinter {
     ) {
         switch (sensorType) {
             case LOCATION -> {
-                List<LocationData> data = sensorDataProvider.getLocationData(start, end, deviceName);
-                locationDataPrinter.printData(data, interval, start, end);
+                List<LocationData> data = locationSensorDataProvider.getData(start, end, deviceName);
+                locationSensorDataPrinter.printData(data, interval, start, end);
             }
             case BAROMETER -> {
-                List<BarometerData> data = sensorDataProvider.getBarometerData(start, end, deviceName);
-                barometerDataPrinter.printData(data, interval, start, end);
+                List<BarometerData> data = barometerSensorDataProvider.getData(start, end, deviceName);
+                barometerSensorDataPrinter.printData(data, interval, start, end);
             }
             case LIGHT -> {
-                List<LightData> data = sensorDataProvider.getLightData(start, end, deviceName);
-                lightDataPrinter.printData(data, interval, start, end);
+                List<LightData> data = lightSensorDataProvider.getData(start, end, deviceName);
+                lightSensorDataPrinter.printData(data, interval, start, end);
             }
             case ACCELEROMETER -> {
-                List<AccelerometerData> data = sensorDataProvider.getAccelerometerData(start, end, deviceName);
-                accelerometerDataPrinter.printData(data, interval, start, end);
+                List<AccelerometerData> data = accelerometerSensorDataProvider.getData(start, end, deviceName);
+                accelerometerSensorDataPrinter.printData(data, interval, start, end);
             }
         }
     }
