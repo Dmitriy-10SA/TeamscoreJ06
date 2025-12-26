@@ -1,6 +1,6 @@
-package common.entities.sensor.data;
+package common.entity.sensor.data;
 
-import common.entities.Sensor;
+import common.entity.Sensor;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Table;
@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
  * Данные датчика типа LOCATION
  *
  * @see SensorData
- * @see common.entities.Sensor.SensorType
+ * @see common.entity.Sensor.SensorType
  */
 @Entity
 @Table(name = "location_data", schema = "sensors_data")

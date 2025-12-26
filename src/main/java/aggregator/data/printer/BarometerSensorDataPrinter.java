@@ -1,6 +1,6 @@
 package aggregator.data.printer;
 
-import common.entities.sensor.data.BarometerData;
+import common.entity.sensor.data.BarometerData;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

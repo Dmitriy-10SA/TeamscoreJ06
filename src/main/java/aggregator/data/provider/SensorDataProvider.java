@@ -1,6 +1,6 @@
 package aggregator.data.provider;
 
-import common.entities.sensor.data.SensorData;
+import common.entity.sensor.data.SensorData;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 import jakarta.persistence.TypedQuery;

@@ -1,7 +1,7 @@
 package common;
 
-import common.entities.Device;
-import common.entities.Sensor;
+import common.entity.Device;
+import common.entity.Sensor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 

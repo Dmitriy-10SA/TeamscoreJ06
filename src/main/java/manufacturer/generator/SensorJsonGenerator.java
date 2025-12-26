@@ -1,7 +1,7 @@
 package manufacturer.generator;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import common.entities.Sensor;
+import common.entity.Sensor;
 
 import java.util.HashMap;
 import java.util.Map;

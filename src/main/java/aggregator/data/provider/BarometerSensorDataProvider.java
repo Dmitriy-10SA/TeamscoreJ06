@@ -1,6 +1,6 @@
 package aggregator.data.provider;
 
-import common.entities.sensor.data.BarometerData;
+import common.entity.sensor.data.BarometerData;
 import jakarta.persistence.EntityManagerFactory;
 
 /**

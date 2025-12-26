@@ -8,11 +8,11 @@ import aggregator.data.provider.AccelerometerSensorDataProvider;
 import aggregator.data.provider.BarometerSensorDataProvider;
 import aggregator.data.provider.LightSensorDataProvider;
 import aggregator.data.provider.LocationSensorDataProvider;
-import common.entities.Sensor;
-import common.entities.sensor.data.AccelerometerData;
-import common.entities.sensor.data.BarometerData;
-import common.entities.sensor.data.LightData;
-import common.entities.sensor.data.LocationData;
+import common.entity.Sensor;
+import common.entity.sensor.data.AccelerometerData;
+import common.entity.sensor.data.BarometerData;
+import common.entity.sensor.data.LightData;
+import common.entity.sensor.data.LocationData;
 import jakarta.persistence.EntityManagerFactory;
 import lombok.Getter;
 

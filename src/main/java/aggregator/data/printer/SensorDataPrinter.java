@@ -1,7 +1,7 @@
 package aggregator.data.printer;
 
 import aggregator.SensorPrinter;
-import common.entities.sensor.data.SensorData;
+import common.entity.sensor.data.SensorData;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

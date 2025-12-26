@@ -1,6 +1,6 @@
 package aggregator.data.printer;
 
-import common.entities.sensor.data.LightData;
+import common.entity.sensor.data.LightData;
 import lombok.Getter;
 
 import java.time.LocalDateTime;

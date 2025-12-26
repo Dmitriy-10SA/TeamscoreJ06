@@ -1,6 +1,6 @@
 package aggregator.data.provider;
 
-import common.entities.sensor.data.LightData;
+import common.entity.sensor.data.LightData;
 import jakarta.persistence.EntityManagerFactory;
 
 /**

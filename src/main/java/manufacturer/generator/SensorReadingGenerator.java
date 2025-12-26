@@ -1,7 +1,7 @@
 package manufacturer.generator;
 
-import common.entities.Sensor;
-import common.entities.SensorReading;
+import common.entity.Sensor;
+import common.entity.SensorReading;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
