@@ -7,6 +7,11 @@ import lombok.NoArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Устройство
+ *
+ * @see Sensor
+ */
 @Entity
 @Table(name = "device", schema = "devices")
 @Getter
@@ -28,12 +33,11 @@ public class Device {
         this.sensors = new ArrayList<>();
     }
 
+    /**
+     * Добавление датчика у устройства
+     */
     public void addSensor(Sensor sensor) {
         sensors.add(sensor);
         sensor.setDevice(this);
-    }
-
-    public void deleteSensor(Sensor sensor) {
-        sensors.remove(sensor);
     }
 }

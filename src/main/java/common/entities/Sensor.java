@@ -8,6 +8,11 @@ import org.hibernate.annotations.ColumnTransformer;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+/**
+ * Датчик
+ *
+ * @see Device
+ */
 @Entity
 @Table(name = "sensor", schema = "sensors")
 @Getter
@@ -33,6 +38,9 @@ public class Sensor {
         this.type = type;
     }
 
+    /**
+     * Тип датчика
+     */
     public enum SensorType {
         LIGHT, BAROMETER, LOCATION, ACCELEROMETER
     }

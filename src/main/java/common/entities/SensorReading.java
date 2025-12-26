@@ -9,6 +9,11 @@ import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
 
+/**
+ * Показания датчика (таблица для хранения "сырых" показаний датчиков)
+ *
+ * @see Sensor
+ */
 @Entity
 @Table(name = "sensor_reading", schema = "sensors_readings")
 @Getter

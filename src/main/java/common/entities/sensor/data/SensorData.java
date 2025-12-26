@@ -7,6 +7,15 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Абстрактный класс данных датчика
+ *
+ * @see Sensor
+ * @see AccelerometerData
+ * @see BarometerData
+ * @see LightData
+ * @see LocationData
+ */
 @MappedSuperclass
 @Getter
 @NoArgsConstructor

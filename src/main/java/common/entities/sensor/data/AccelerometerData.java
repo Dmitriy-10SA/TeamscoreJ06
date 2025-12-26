@@ -9,6 +9,12 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+/**
+ * Данные датчика типа ACCELEROMETER
+ *
+ * @see SensorData
+ * @see common.entities.Sensor.SensorType
+ */
 @Entity
 @Table(name = "accelerometer_data", schema = "sensors_data")
 @Getter
