@@ -10,6 +10,9 @@ import java.util.concurrent.ThreadLocalRandom;
  * Читатель датчиков, который записывает в БД данные (в таблицу SensorReading)
  */
 public class SensorReader {
+    private static final int MIN_SLEEP_DELAY_MS = 50;
+    private static final int MAX_SLEEP_DELAY_MS = 800;
+
     private final SensorReadingGenerator sensorReadingGenerator;
     private final SensorReadingSaver sensorReadingSaver;
 
@@ -28,7 +31,7 @@ public class SensorReader {
         try {
             SensorReading sensorReading = sensorReadingGenerator.generate();
             sensorReadingSaver.save(sensorReading);
-            Thread.sleep(ThreadLocalRandom.current().nextInt(50, 800));
+            Thread.sleep(ThreadLocalRandom.current().nextInt(MIN_SLEEP_DELAY_MS, MAX_SLEEP_DELAY_MS));
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {

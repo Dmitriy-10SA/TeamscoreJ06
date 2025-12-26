@@ -4,6 +4,10 @@ import common.entity.Sensor;
 import common.entity.SensorReading;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import manufacturer.generator.light.AccelerometerSensorDataJsonGenerator;
+import manufacturer.generator.light.BarometerSensorDataJsonGenerator;
+import manufacturer.generator.light.LightSensorDataJsonGenerator;
+import manufacturer.generator.light.LocationSensorDataJsonGenerator;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -15,11 +19,17 @@ import java.util.concurrent.ThreadLocalRandom;
 public class SensorReadingGenerator {
     private static final String SELECT_ALL_SENSORS = "SELECT s FROM Sensor s";
 
-    private final SensorJsonGenerator sensorJsonGenerator;
+    private final AccelerometerSensorDataJsonGenerator accelerometerSensorDataJsonGenerator;
+    private final BarometerSensorDataJsonGenerator barometerSensorDataJsonGenerator;
+    private final LightSensorDataJsonGenerator lightSensorDataJsonGenerator;
+    private final LocationSensorDataJsonGenerator locationSensorDataJsonGenerator;
     private final List<Sensor> sensors;
 
     public SensorReadingGenerator(EntityManagerFactory entityManagerFactory) {
-        this.sensorJsonGenerator = new SensorJsonGenerator();
+        this.accelerometerSensorDataJsonGenerator = new AccelerometerSensorDataJsonGenerator();
+        this.barometerSensorDataJsonGenerator = new BarometerSensorDataJsonGenerator();
+        this.lightSensorDataJsonGenerator = new LightSensorDataJsonGenerator();
+        this.locationSensorDataJsonGenerator = new LocationSensorDataJsonGenerator();
         try (EntityManager entityManager = entityManagerFactory.createEntityManager()) {
             this.sensors = entityManager.createQuery(SELECT_ALL_SENSORS, Sensor.class).getResultList();
         }
@@ -31,7 +41,12 @@ public class SensorReadingGenerator {
     public SensorReading generate() throws Exception {
         Sensor sensor = sensors.get(ThreadLocalRandom.current().nextInt(sensors.size()));
         LocalDateTime measuredAt = LocalDateTime.now();
-        String jsonValue = sensorJsonGenerator.generateSensorJson(sensor.getType());
+        String jsonValue = switch (sensor.getType()) {
+            case ACCELEROMETER -> accelerometerSensorDataJsonGenerator.generate();
+            case BAROMETER -> barometerSensorDataJsonGenerator.generate();
+            case LIGHT -> lightSensorDataJsonGenerator.generate();
+            case LOCATION -> locationSensorDataJsonGenerator.generate();
+        };
         return new SensorReading(sensor, measuredAt, jsonValue);
     }
 }
