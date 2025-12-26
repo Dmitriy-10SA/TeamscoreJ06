@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Класс для заполнения БД устройствами и датчиками в этих устройствах
+ * Класс для заполнения БД устройствами и датчиками в этих устройствах (только датчики и устройства, без данных)
  */
 public class DevicesAndDeviceSensorsInitializer {
     private static final String[] DEVICE_NAMES = {
