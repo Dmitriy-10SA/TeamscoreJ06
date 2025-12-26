@@ -1,4 +1,4 @@
-package aggregator.printer;
+package aggregator.data.printer;
 
 import aggregator.SensorPrinter;
 import common.entities.sensor.data.SensorData;

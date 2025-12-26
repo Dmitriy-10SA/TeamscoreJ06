@@ -1,13 +1,13 @@
 package aggregator;
 
-import aggregator.printer.AccelerometerSensorDataPrinter;
-import aggregator.printer.BarometerSensorDataPrinter;
-import aggregator.printer.LightSensorDataPrinter;
-import aggregator.printer.LocationSensorDataPrinter;
-import aggregator.provider.AccelerometerSensorDataProvider;
-import aggregator.provider.BarometerSensorDataProvider;
-import aggregator.provider.LightSensorDataProvider;
-import aggregator.provider.LocationSensorDataProvider;
+import aggregator.data.printer.AccelerometerSensorDataPrinter;
+import aggregator.data.printer.BarometerSensorDataPrinter;
+import aggregator.data.printer.LightSensorDataPrinter;
+import aggregator.data.printer.LocationSensorDataPrinter;
+import aggregator.data.provider.AccelerometerSensorDataProvider;
+import aggregator.data.provider.BarometerSensorDataProvider;
+import aggregator.data.provider.LightSensorDataProvider;
+import aggregator.data.provider.LocationSensorDataProvider;
 import common.entities.Sensor;
 import common.entities.sensor.data.AccelerometerData;
 import common.entities.sensor.data.BarometerData;

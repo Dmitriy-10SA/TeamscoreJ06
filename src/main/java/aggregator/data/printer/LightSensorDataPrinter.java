@@ -1,4 +1,4 @@
-package aggregator.printer;
+package aggregator.data.printer;
 
 import common.entities.sensor.data.LightData;
 import lombok.Getter;

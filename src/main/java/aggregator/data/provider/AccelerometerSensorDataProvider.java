@@ -1,4 +1,4 @@
-package aggregator.provider;
+package aggregator.data.provider;
 
 import common.entities.sensor.data.AccelerometerData;
 import jakarta.persistence.EntityManagerFactory;
