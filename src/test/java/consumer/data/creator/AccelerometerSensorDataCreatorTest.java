@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class AccelerometerSensorDataCreatorTest {
-
     private AccelerometerSensorDataCreator creator;
     private Sensor testSensor;
     private LocalDateTime measuredAt;

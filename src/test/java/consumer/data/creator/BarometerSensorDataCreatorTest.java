@@ -11,7 +11,6 @@ import java.time.LocalDateTime;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BarometerSensorDataCreatorTest {
-
     private BarometerSensorDataCreator creator;
     private Sensor testSensor;
     private LocalDateTime measuredAt;
