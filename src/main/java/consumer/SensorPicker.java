@@ -7,6 +7,7 @@ import consumer.data.creator.LightSensorDataCreator;
 import consumer.data.creator.LocationSensorDataCreator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -25,7 +26,8 @@ public class SensorPicker {
     private final LightSensorDataCreator lightSensorDataCreator;
     private final LocationSensorDataCreator locationSensorDataCreator;
 
-    private boolean isRunning;
+    @Getter
+    private volatile boolean isRunning;
 
     public SensorPicker(EntityManagerFactory factory) {
         this.factory = factory;
@@ -33,7 +35,7 @@ public class SensorPicker {
         this.barometerSensorDataCreator = new BarometerSensorDataCreator();
         this.lightSensorDataCreator = new LightSensorDataCreator();
         this.locationSensorDataCreator = new LocationSensorDataCreator();
-        this.isRunning = true;
+        this.isRunning = false;
     }
 
     /**
@@ -81,8 +83,11 @@ public class SensorPicker {
      * Запуск разборщика
      */
     public void start() {
+        if (isRunning) {
+            throw new IllegalArgumentException("SensorPicker уже запущен!");
+        }
         isRunning = true;
-        while (isRunning) {
+        while (isRunning && !Thread.currentThread().isInterrupted()) {
             processPendingSensorReadings();
         }
     }
