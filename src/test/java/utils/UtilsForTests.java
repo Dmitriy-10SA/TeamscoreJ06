@@ -18,17 +18,6 @@ import java.nio.file.Paths;
  * Класс с вспомогательными методами для тестов
  */
 public class UtilsForTests {
-    private static final EntityManagerFactory FACTORY = new Configuration()
-            .configure("hibernate-test.cfg.xml")
-            .addAnnotatedClass(AccelerometerData.class)
-            .addAnnotatedClass(BarometerData.class)
-            .addAnnotatedClass(LightData.class)
-            .addAnnotatedClass(LocationData.class)
-            .addAnnotatedClass(Device.class)
-            .addAnnotatedClass(Sensor.class)
-            .addAnnotatedClass(SensorReading.class)
-            .buildSessionFactory();
-
     private UtilsForTests() {
     }
 
@@ -36,7 +25,16 @@ public class UtilsForTests {
      * Получение экземпляра EntityManagerFactory
      */
     public static EntityManagerFactory getEntityManagerFactory() {
-        return FACTORY;
+        return new Configuration()
+                .configure("hibernate-test.cfg.xml")
+                .addAnnotatedClass(AccelerometerData.class)
+                .addAnnotatedClass(BarometerData.class)
+                .addAnnotatedClass(LightData.class)
+                .addAnnotatedClass(LocationData.class)
+                .addAnnotatedClass(Device.class)
+                .addAnnotatedClass(Sensor.class)
+                .addAnnotatedClass(SensorReading.class)
+                .buildSessionFactory();
     }
 
     /**

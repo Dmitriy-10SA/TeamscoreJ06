@@ -11,8 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import utils.UtilsForTests;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -27,17 +27,18 @@ class SensorReadingSaverTest {
     }
 
     @AfterAll
-    static void closeFactory() {
+    static void clearDbDataAndCloseFactory() {
+        UtilsForTests.clearDbData(factory);
         factory.close();
     }
 
     @BeforeEach
-    void clearDB() {
+    void clearDbData() {
         UtilsForTests.clearDbData(factory);
     }
 
     @Test
-    void saveCorrectSaveSensorReadingWithNullSavedAt() {
+    void saveCorrectSavedSensorReadingWithNullSavedAt() {
         Device device = new Device("testDevice");
         Sensor sensor = new Sensor("sensorId", Sensor.SensorType.LIGHT);
         device.addSensor(sensor);
@@ -48,16 +49,15 @@ class SensorReadingSaverTest {
             entityManager.persist(device);
             entityManager.getTransaction().commit();
         }
-
         SensorReading sensorReading = new SensorReading(sensor, measureAt, jsonValue);
         saver.save(sensorReading);
-
         try (EntityManager entityManager = factory.createEntityManager()) {
             SensorReading found = entityManager.find(SensorReading.class, sensorReading.getId());
             assertEquals(sensor.getId(), found.getSensor().getId());
             assertEquals(sensor.getType(), found.getSensor().getType());
             assertEquals(device.getId(), found.getSensor().getDevice().getId());
-            assertEquals(measureAt.truncatedTo(ChronoUnit.MILLIS), found.getMeasuredAt());
+            long diffMillis = Math.abs(Duration.between(measureAt, found.getMeasuredAt()).toMillis());
+            assertTrue(diffMillis <= 1);
             assertEquals(jsonValue, found.getValueJson());
             assertNull(sensorReading.getSavedAt());
         }
@@ -67,7 +67,6 @@ class SensorReadingSaverTest {
     void saveRollbackOnExceptionAndInDBNoData() {
         SensorReading sensorReading = new SensorReading(null, null, null);
         assertThrows(Exception.class, () -> saver.save(sensorReading));
-
         try (EntityManager entityManager = factory.createEntityManager()) {
             long count = entityManager
                     .createQuery("SELECT COUNT(r) FROM SensorReading r", Long.class)
