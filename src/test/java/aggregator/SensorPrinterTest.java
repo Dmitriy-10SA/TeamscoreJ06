@@ -34,11 +34,13 @@ class SensorPrinterTest {
     }
 
     @Test
-    void whenMoreThanOneThreadStartThenThrowException() throws InterruptedException {
+    void whenMoreThanOneThreadStartThenThrowException() {
         sensorPrinter = new SensorPrinter(new Scanner(System.in), factory);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(sensorPrinter::start);
-        Thread.sleep(1_000);
+        while (!sensorPrinter.isRunning()) {
+            Thread.yield();
+        }
         assertThrows(IllegalArgumentException.class, () -> sensorPrinter.start());
         sensorPrinter.stop();
         assertFalse(sensorPrinter.isRunning());
@@ -46,14 +48,16 @@ class SensorPrinterTest {
     }
 
     @Test
-    void correctStart() throws InterruptedException {
+    void correctStart() {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
         System.setOut(new PrintStream(outContent));
         Scanner scanner = new Scanner(System.in);
         sensorPrinter = new SensorPrinter(scanner, factory);
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(() -> sensorPrinter.start());
-        Thread.sleep(1_000);
+        while (!sensorPrinter.isRunning()) {
+            Thread.yield();
+        }
         sensorPrinter.stop();
         executor.shutdown();
         assertFalse(sensorPrinter.isRunning());

@@ -38,10 +38,12 @@ class SensorPickerTest {
     }
 
     @Test
-    void whenMoreThanOneThreadStartThenThrowException() throws InterruptedException {
+    void whenMoreThanOneThreadStartThenThrowException() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> sensorPicker.start());
-        Thread.sleep(1_000);
+        while (!sensorPicker.isRunning()) {
+            Thread.yield();
+        }
         assertThrows(IllegalArgumentException.class, () -> sensorPicker.start());
         sensorPicker.stop();
         assertFalse(sensorPicker.isRunning());
@@ -50,9 +52,7 @@ class SensorPickerTest {
 
     @ParameterizedTest
     @EnumSource(Sensor.SensorType.class)
-    void correctStartStopAndProcessSensorReadingsForAllSensorTypes(
-            Sensor.SensorType type
-    ) throws InterruptedException {
+    void correctStartStopAndProcessSensorReadingsForAllSensorTypes(Sensor.SensorType type) {
         String json = switch (type) {
             case LOCATION -> "{\"longitude\": 10.0, \"latitude\": 20.0}";
             case LIGHT -> "{\"light\": 123}";
@@ -71,7 +71,7 @@ class SensorPickerTest {
             Sensor sensor = new Sensor(type.name(), type);
             device.addSensor(sensor);
             entityManager.persist(device);
-            entityManager.persist(new SensorReading(new Sensor(type.name(), type), LocalDateTime.now(), json));
+            entityManager.persist(new SensorReading(sensor, LocalDateTime.now(), json));
             entityManager.getTransaction().commit();
         }
         try (EntityManager entityManager = factory.createEntityManager()) {
@@ -86,17 +86,27 @@ class SensorPickerTest {
         }
         ExecutorService executor = Executors.newSingleThreadExecutor();
         executor.execute(sensorPicker::start);
-        Thread.sleep(1_000);
-        sensorPicker.stop();
-        executor.shutdown();
+        try {
+            while (true) {
+                try (EntityManager entityManager = factory.createEntityManager()) {
+                    long notSaved = entityManager
+                            .createQuery(
+                                    "SELECT COUNT(sr) FROM SensorReading sr WHERE sr.savedAt IS NULL",
+                                    Long.class
+                            )
+                            .getSingleResult();
+                    if (notSaved == 0) break;
+                }
+                Thread.yield();
+            }
+        } finally {
+            sensorPicker.stop();
+            executor.shutdown();
+        }
         try (EntityManager entityManager = factory.createEntityManager()) {
-            long notSavedAfter = entityManager
-                    .createQuery("SELECT COUNT(sr) FROM SensorReading sr WHERE sr.savedAt IS NULL", Long.class)
-                    .getSingleResult();
             long dataCountAfter = entityManager
                     .createQuery("SELECT COUNT(d) FROM " + dataEntityName + " d", Long.class)
                     .getSingleResult();
-            assertEquals(0, notSavedAfter);
             assertEquals(1, dataCountAfter);
             assertFalse(sensorPicker.isRunning());
         }

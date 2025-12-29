@@ -32,10 +32,12 @@ class SensorReaderTest {
     }
 
     @Test
-    void whenMoreThanOneThreadStartThenThrowException() throws InterruptedException {
+    void whenMoreThanOneThreadStartThenThrowException() {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> sensorReader.start());
-        Thread.sleep(1_000);
+        while (!sensorReader.isRunning()) {
+            Thread.yield();
+        }
         assertThrows(IllegalArgumentException.class, () -> sensorReader.start());
         sensorReader.stop();
         assertFalse(sensorReader.isRunning());
@@ -43,7 +45,7 @@ class SensorReaderTest {
     }
 
     @Test
-    void correctStartStopAndSaveSensorReadingsInDatabase() throws InterruptedException {
+    void correctStartStopAndSaveSensorReadingsInDatabase() {
         try (EntityManager entityManager = factory.createEntityManager()) {
             long count = entityManager
                     .createQuery("SELECT COUNT(s) FROM SensorReading s", Long.class)
@@ -52,23 +54,48 @@ class SensorReaderTest {
         }
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         assertFalse(sensorReader.isRunning());
-        executorService.execute(() -> sensorReader.start());
-        Thread.sleep(1_000);
-        sensorReader.stop();
+        executorService.execute(sensorReader::start);
+        try {
+            while (true) {
+                try (EntityManager entityManager = factory.createEntityManager()) {
+                    long count = entityManager
+                            .createQuery("SELECT COUNT(s) FROM SensorReading s", Long.class)
+                            .getSingleResult();
+                    if (count > 0) break;
+                }
+                Thread.yield();
+            }
+        } finally {
+            sensorReader.stop();
+        }
+        long countAfterFirstRun;
         try (EntityManager entityManager = factory.createEntityManager()) {
-            long count = entityManager
+            countAfterFirstRun = entityManager
                     .createQuery("SELECT COUNT(s) FROM SensorReading s", Long.class)
                     .getSingleResult();
-            assertTrue(count > 0);
+            assertTrue(countAfterFirstRun > 0);
             assertFalse(sensorReader.isRunning());
-            executorService.execute(() -> sensorReader.start());
-            Thread.sleep(1_000);
+        }
+        executorService.execute(sensorReader::start);
+        try {
+            while (true) {
+                try (EntityManager entityManager = factory.createEntityManager()) {
+                    long count = entityManager
+                            .createQuery("SELECT COUNT(s) FROM SensorReading s", Long.class)
+                            .getSingleResult();
+                    if (count > countAfterFirstRun) break;
+                }
+                Thread.yield();
+            }
+        } finally {
             sensorReader.stop();
             executorService.shutdown();
-            long countAgain = entityManager
+        }
+        try (EntityManager entityManager = factory.createEntityManager()) {
+            long countAfterSecondRun = entityManager
                     .createQuery("SELECT COUNT(s) FROM SensorReading s", Long.class)
                     .getSingleResult();
-            assertTrue(countAgain > count);
+            assertTrue(countAfterSecondRun > countAfterFirstRun);
             assertFalse(sensorReader.isRunning());
         }
     }
