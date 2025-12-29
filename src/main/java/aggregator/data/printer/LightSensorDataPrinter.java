@@ -1,85 +1,60 @@
 package aggregator.data.printer;
 
-import aggregator.SensorPrinter;
-import common.entities.sensor.data.LightData;
+import common.entity.sensor.data.LightData;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.TreeMap;
-import java.util.stream.Collectors;
 
 /**
  * Класс для печати данных LightData в виде таблицы
+ *
+ * @see SensorDataPrinter
  */
-public class LightSensorDataPrinter extends SensorDataPrinter<LightData> {
-    private final Scanner scanner;
-
+public class LightSensorDataPrinter extends SensorDataPrinter<LightData, LightSensorDataPrinter.LightDataRow> {
     public LightSensorDataPrinter(Scanner scanner) {
-        this.scanner = scanner;
+        super(scanner);
     }
 
-    private List<LightRow> collectDataInIntervalToLightRows(
-            List<LightData> data,
-            LocalDateTime startInterval,
-            LocalDateTime endInterval
-    ) {
-        List<LightRow> rows = new ArrayList<>();
-        data.stream()
-                .filter(it -> {
-                    LocalDateTime t = it.getMeasureAt();
-                    return !t.isBefore(startInterval) && t.isBefore(endInterval);
-                })
-                .collect(Collectors.groupingBy(
-                        it -> it.getSensor().getDevice().getName(),
-                        TreeMap::new,
-                        Collectors.toList()
-                ))
-                .forEach((device, values) -> {
-                    double light = values.stream().mapToInt(LightData::getLight).average().orElse(0);
-                    rows.add(new LightRow(device, startInterval, light));
-                });
+    @Override
+    protected List<LightDataRow> getSensorDataRows(List<LightData> data, LocalDateTime startInterval, LocalDateTime endInterval) {
+        List<LightDataRow> rows = new ArrayList<>();
+        TreeMap<String, List<LightData>> intervalData = getCollectDataInInterval(data, startInterval, endInterval);
+        intervalData.forEach((device, values) -> {
+            double light = values.stream().mapToInt(LightData::getLight).average().orElse(0);
+            rows.add(new LightDataRow(device, startInterval, light));
+        });
         return rows;
     }
 
     @Override
-    public void printData(
-            List<LightData> data,
-            SensorPrinter.SensorPrinterInterval interval,
-            LocalDateTime start,
-            LocalDateTime end
-    ) {
-        if (data.isEmpty()) {
-            System.out.println("Нет данных для выбранного периода.");
-            return;
-        }
-        List<LightRow> rows = new ArrayList<>();
-        LocalDateTime startInterval = getStartInterval(start, interval);
-        while (startInterval.isBefore(end)) {
-            LocalDateTime endInterval = startInterval.plus(1, interval.getChronoUnit());
-            rows.addAll(collectDataInIntervalToLightRows(data, startInterval, endInterval));
-            startInterval = endInterval;
-        }
+    protected void printHeader() {
         System.out.printf("%-32s %-19s %10s%n", "DEVICE", "DATE", "LIGHT");
-        int printed = 0;
-        int total = rows.size();
-        for (LightRow row : rows) {
-            System.out.printf(
-                    "%-32s %-19s %10.2f%n",
-                    row.deviceName,
-                    row.dateTime.format(DATE_TIME_FORMATTER),
-                    row.light
-            );
-            printed++;
-            if (printed % PAGE_SIZE == 0 && printed < total) {
-                System.out.printf("Выведено %d строк из %d. Нажмите Enter для продолжения...%n", printed, total);
-                scanner.nextLine();
-            }
-        }
-        System.out.printf("Выведено %d строк из %d. Конец таблицы%n", printed, total);
     }
 
-    private record LightRow(String deviceName, LocalDateTime dateTime, double light) {
+    @Override
+    protected void printSensorDataRow(LightDataRow lightDataRow) {
+        System.out.printf(
+                "%-32s %-19s %10.2f%n",
+                lightDataRow.getDeviceName(),
+                lightDataRow.getDateTime().format(DATE_TIME_FORMATTER),
+                lightDataRow.getLight()
+        );
+    }
+
+    /**
+     * Строка данных датчика LIGHT
+     */
+    @Getter
+    protected static class LightDataRow extends SensorDataRow {
+        private final double light;
+
+        public LightDataRow(String deviceName, LocalDateTime dateTime, double light) {
+            super(deviceName, dateTime);
+            this.light = light;
+        }
     }
 }

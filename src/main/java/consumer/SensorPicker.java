@@ -1,8 +1,13 @@
 package consumer;
 
-import common.entities.SensorReading;
+import common.entity.SensorReading;
+import consumer.data.creator.AccelerometerSensorDataCreator;
+import consumer.data.creator.BarometerSensorDataCreator;
+import consumer.data.creator.LightSensorDataCreator;
+import consumer.data.creator.LocationSensorDataCreator;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import lombok.Getter;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -16,14 +21,39 @@ public class SensorPicker {
             """;
 
     private final EntityManagerFactory factory;
-    private final SensorDataSaver sensorDataSaver;
+    private final AccelerometerSensorDataCreator accelerometerSensorDataCreator;
+    private final BarometerSensorDataCreator barometerSensorDataCreator;
+    private final LightSensorDataCreator lightSensorDataCreator;
+    private final LocationSensorDataCreator locationSensorDataCreator;
 
-    private boolean isRunning;
+    @Getter
+    private volatile boolean isRunning;
 
     public SensorPicker(EntityManagerFactory factory) {
         this.factory = factory;
-        this.sensorDataSaver = new SensorDataSaver();
-        this.isRunning = true;
+        this.accelerometerSensorDataCreator = new AccelerometerSensorDataCreator();
+        this.barometerSensorDataCreator = new BarometerSensorDataCreator();
+        this.lightSensorDataCreator = new LightSensorDataCreator();
+        this.locationSensorDataCreator = new LocationSensorDataCreator();
+        this.isRunning = false;
+    }
+
+    /**
+     * Сохранение данных
+     */
+    private void saveData(SensorReading sensorReading, EntityManager entityManager) throws Exception {
+        entityManager.merge(sensorReading.getSensor());
+        entityManager.merge(sensorReading.getSensor().getDevice());
+        entityManager.persist(
+                switch (sensorReading.getSensor().getType()) {
+                    case ACCELEROMETER -> accelerometerSensorDataCreator.createAndGetSensorDataForSave(sensorReading);
+                    case BAROMETER -> barometerSensorDataCreator.createAndGetSensorDataForSave(sensorReading);
+                    case LIGHT -> lightSensorDataCreator.createAndGetSensorDataForSave(sensorReading);
+                    case LOCATION -> locationSensorDataCreator.createAndGetSensorDataForSave(sensorReading);
+                }
+        );
+        sensorReading.setSavedAt(LocalDateTime.now());
+        entityManager.merge(sensorReading);
     }
 
     /**
@@ -37,11 +67,7 @@ public class SensorPicker {
                         .createQuery(SELECT_ALL_NOT_SAVED_SENSOR_READINGS, SensorReading.class)
                         .getResultList();
                 for (SensorReading sensorReading : sensorReadings) {
-                    entityManager.merge(sensorReading.getSensor());
-                    entityManager.merge(sensorReading.getSensor().getDevice());
-                    sensorDataSaver.saveSensorData(sensorReading, entityManager);
-                    sensorReading.setSavedAt(LocalDateTime.now());
-                    entityManager.merge(sensorReading);
+                    saveData(sensorReading, entityManager);
                 }
                 entityManager.getTransaction().commit();
             } catch (Exception e) {
@@ -57,8 +83,11 @@ public class SensorPicker {
      * Запуск разборщика
      */
     public void start() {
+        if (isRunning) {
+            throw new IllegalArgumentException("SensorPicker уже запущен!");
+        }
         isRunning = true;
-        while (isRunning) {
+        while (isRunning && !Thread.currentThread().isInterrupted()) {
             processPendingSensorReadings();
         }
     }

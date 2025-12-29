@@ -1,6 +1,6 @@
 package manufacturer;
 
-import common.entities.SensorReading;
+import common.entity.SensorReading;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 

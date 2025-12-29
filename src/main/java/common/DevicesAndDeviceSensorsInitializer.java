@@ -1,7 +1,7 @@
 package common;
 
-import common.entities.Device;
-import common.entities.Sensor;
+import common.entity.Device;
+import common.entity.Sensor;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
 
@@ -10,7 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 /**
- * Класс для заполнения БД устройствами и датчиками в этих устройствах
+ * Класс для заполнения БД устройствами и датчиками в этих устройствах (только датчики и устройства, без данных)
  */
 public class DevicesAndDeviceSensorsInitializer {
     private static final String[] DEVICE_NAMES = {
