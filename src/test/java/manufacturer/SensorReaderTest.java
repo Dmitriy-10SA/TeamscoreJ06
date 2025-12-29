@@ -32,9 +32,10 @@ class SensorReaderTest {
     }
 
     @Test
-    void whenMoreThanOneThreadStartThenThrowException() {
+    void whenMoreThanOneThreadStartThenThrowException() throws InterruptedException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> sensorReader.start());
+        Thread.sleep(1_000);
         assertThrows(IllegalArgumentException.class, () -> sensorReader.start());
         sensorReader.stop();
         assertFalse(sensorReader.isRunning());

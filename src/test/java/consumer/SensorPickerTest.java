@@ -38,9 +38,10 @@ class SensorPickerTest {
     }
 
     @Test
-    void whenMoreThanOneThreadStartThenThrowException() {
+    void whenMoreThanOneThreadStartThenThrowException() throws InterruptedException {
         ExecutorService executorService = Executors.newSingleThreadExecutor();
         executorService.execute(() -> sensorPicker.start());
+        Thread.sleep(1_000);
         assertThrows(IllegalArgumentException.class, () -> sensorPicker.start());
         sensorPicker.stop();
         assertFalse(sensorPicker.isRunning());
