@@ -57,9 +57,10 @@ class SensorDataCreatorTest {
 
     @Test
     void createAndGetSensorDataForSaveThrowsException() {
-        Exception exception = assertThrows(Exception.class, () -> {
-            exceptionCreator.createAndGetSensorDataForSave(null);
-        });
+        Exception exception = assertThrows(
+                Exception.class,
+                () -> exceptionCreator.createAndGetSensorDataForSave(null)
+        );
         assertEquals("Test exception", exception.getMessage());
     }
 }

@@ -19,15 +19,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class SensorDataPrinterTest {
     private static class TestSensorData extends SensorData {
-        private final int value;
-
-        public TestSensorData(Sensor sensor, LocalDateTime measureAt, int value) {
+        public TestSensorData(Sensor sensor, LocalDateTime measureAt) {
             super(sensor, measureAt);
-            this.value = value;
-        }
-
-        public int getValue() {
-            return value;
         }
     }
 
@@ -112,13 +105,13 @@ class SensorDataPrinterTest {
         device1.addSensor(sensor1);
         device2.addSensor(sensor2);
         return List.of(
-                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 8, 0), 1_000),
-                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 10, 0), 10),
-                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 11, 0), 20),
-                new TestSensorData(sensor2, LocalDateTime.of(2025, 12, 29, 11, 0), 20),
-                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 12, 0), 30),
-                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 12, 0), 5_000),
-                new TestSensorData(sensor2, LocalDateTime.of(2025, 12, 29, 12, 0), 5_000)
+                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 8, 0)),
+                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 10, 0)),
+                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 11, 0)),
+                new TestSensorData(sensor2, LocalDateTime.of(2025, 12, 29, 11, 0)),
+                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 12, 0)),
+                new TestSensorData(sensor1, LocalDateTime.of(2025, 12, 29, 12, 0)),
+                new TestSensorData(sensor2, LocalDateTime.of(2025, 12, 29, 12, 0))
         );
     }
 
@@ -153,7 +146,7 @@ class SensorDataPrinterTest {
         common.entity.Sensor sensor = new common.entity.Sensor("s1", common.entity.Sensor.SensorType.LOCATION);
         LocalDateTime now = LocalDateTime.now();
         for (int i = 0; i < 3; i++) {
-            data.add(new TestSensorData(sensor, now.plusHours(i), 100));
+            data.add(new TestSensorData(sensor, now.plusHours(i)));
         }
         printer.printData(data, SensorPrinter.SensorPrinterInterval.HOUR, now, now.plusHours(3));
         String output = outContent.toString();
