@@ -63,7 +63,7 @@ public abstract class SensorDataProvider<T extends SensorData> {
     /**
      * Получение данных датчика
      */
-    public List<T> getData(LocalDateTime start, LocalDateTime end, String deviceName) {
+    public final List<T> getData(LocalDateTime start, LocalDateTime end, String deviceName) {
         try (EntityManager entityManager = factory.createEntityManager()) {
             String queryString = createQueryString(deviceName);
             TypedQuery<T> query = entityManager.createQuery(queryString, getEntityClass());

@@ -38,6 +38,7 @@ public class SensorPrinter {
     private final LocationSensorDataPrinter locationSensorDataPrinter;
     private final LocationSensorDataProvider locationSensorDataProvider;
 
+    @Getter
     private boolean isRunning;
 
     public SensorPrinter(Scanner scanner, EntityManagerFactory factory) {
@@ -50,7 +51,7 @@ public class SensorPrinter {
         this.lightSensorDataProvider = new LightSensorDataProvider(factory);
         this.locationSensorDataPrinter = new LocationSensorDataPrinter(scanner);
         this.locationSensorDataProvider = new LocationSensorDataProvider(factory);
-        this.isRunning = true;
+        this.isRunning = false;
     }
 
     /**
@@ -113,6 +114,9 @@ public class SensorPrinter {
      * Запуск класса для вывода данных
      */
     public void start() {
+        if (isRunning) {
+            throw new IllegalArgumentException("SensorPrinter уже запущен!");
+        }
         isRunning = true;
         while (isRunning) {
             System.out.print("Выберите действие (0 - выход, 1 - печать ACCELEROMETER," +
